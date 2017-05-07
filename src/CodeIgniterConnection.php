@@ -98,10 +98,8 @@ class CodeIgniterConnection extends Connection
     {
         return $this->run($query, $bindings, function( $query, $bindings) {
             if ($this->pretending()) return array();
-
             // pass query to CodeIgniter database layer
             $bindings = $this->prepareBindings($bindings);
-
             return $this->fetchResult($this->ci->db->query($query, $bindings));
         });
     }
