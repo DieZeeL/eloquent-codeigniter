@@ -94,14 +94,24 @@ class CodeIgniterConnection extends Connection
      * @param  array  $bindings
      * @return array
      */
-    public function select($query, $bindings = array())
+    public function select($query, $bindings = array(), $useReadPdo = false)
     {
-        return $this->run($query, $bindings, function( $query, $bindings) {
+        $self = $this;
+
+        return $this->run($query, $bindings, function( $query, $bindings) use ($self, $useReadPdo) {
+            //dump( $me->pretending());
             if ($this->pretending()) return array();
-            // pass query to CodeIgniter database layer
+
             $bindings = $this->prepareBindings($bindings);
+
             return $this->fetchResult($this->ci->db->query($query, $bindings));
         });
+    }
+
+
+    public function getFetchMode()
+    {
+        return $this->fetchMode;
     }
 
     /**
@@ -134,26 +144,15 @@ class CodeIgniterConnection extends Connection
     {
         $self = $this;
 
-        return $this->run($query, $bindings, function($me, $query, $bindings) use ($self) {
-            if ($me->pretending()) return true;
+        return $this->run($query, $bindings, function( $query, $bindings)  {
+            if ($this->pretending()) return true;
 
             // pass query to CodeIgniter database layer
-            $bindings = $me->prepareBindings($bindings);
+            $bindings = $this->prepareBindings($bindings);
 
-            return (bool) $self->ci->db->query($query, $bindings);
+            return (bool) $this->ci->db->query($query, $bindings);
         });
     }
-    
-    /**
-     * Get fetch mode 
-     *
-     * @return void
-     */
-    public function getFetchMode()
-    {
-        return $this->fetchMode;
-    }
-
 
     /**
      * Run an SQL statement and get the number of rows affected.
@@ -164,17 +163,17 @@ class CodeIgniterConnection extends Connection
      */
     public function affectingStatement($query, $bindings = array())
     {
-        $self = $this;
+        
 
-        return $this->run($query, $bindings, function($me, $query, $bindings) use ($self) {
-            if ($me->pretending()) return 0;
+        return $this->run($query, $bindings, function( $query, $bindings)  {
+            if ($this->pretending()) return 0;
 
             // pass query to CodeIgniter database layer
-            $bindings = $me->prepareBindings($bindings);
-            $self->ci->db->query($query, $bindings);
+            $bindings = $this->prepareBindings($bindings);
+            $this->ci->db->query($query, $bindings);
 
             // return number of rows affected
-            return $self->ci->db->affected_rows();
+            return $this->ci->db->affected_rows();
         });
     }
 
