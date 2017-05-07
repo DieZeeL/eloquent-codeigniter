@@ -96,15 +96,13 @@ class CodeIgniterConnection extends Connection
      */
     public function select($query, $bindings = array())
     {
-        $self = $this;
-
-        return $this->run($query, $bindings, function($me, $query, $bindings) use ($self) {
-            if ($me->pretending()) return array();
+        return $this->run($query, $bindings, function( $query, $bindings) {
+            if ($this->pretending()) return array();
 
             // pass query to CodeIgniter database layer
-            $bindings = $me->prepareBindings($bindings);
+            $bindings = $this->prepareBindings($bindings);
 
-            return $self->fetchResult($self->ci->db->query($query, $bindings));
+            return $this->fetchResult($this->ci->db->query($query, $bindings));
         });
     }
 
@@ -147,6 +145,17 @@ class CodeIgniterConnection extends Connection
             return (bool) $self->ci->db->query($query, $bindings);
         });
     }
+    
+    /**
+     * Get fetch mode 
+     *
+     * @return void
+     */
+    public function getFetchMode()
+    {
+        return $this->fetchMode;
+    }
+
 
     /**
      * Run an SQL statement and get the number of rows affected.
