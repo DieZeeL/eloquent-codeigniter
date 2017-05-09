@@ -1,5 +1,5 @@
 {
-    "name": "expressodev/laravel-codeigniter-db",
+    "name": "carlosocarvalho/eloquent-codeigniter",
     "type": "library",
     "description": "Integration layer allowing use of the Laravel database library in CodeIgniter applications",
     "keywords": [
@@ -13,14 +13,17 @@
         "orm"
     ],
     "license": "MIT",
-    "authors": [
-        {
+    "authors": [{
             "name": "Adrian Macneil",
             "email": "adrian@adrianmacneil.com"
+        },
+        {
+            "name": "Carlos Carvalho",
+            "email": "contato@carlosocarvalho.com.br"
         }
     ],
     "autoload": {
-        "psr-4": { "Illuminate\\CodeIgniter\\" : "src/" }
+        "psr-4": { "Illuminate\\CodeIgniter\\": "src/" }
     },
     "require": {
         "illuminate/database": "~4.1|~5.0"
